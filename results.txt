@@ -1,0 +1,4 @@
+acc score of knn in test dataset is 0.94
+acc score of mlp in test dataset is 0.96
+acc score of single based multiple classifier - mlp in test dataset is 0.98
+acc score of single based multiple classifier - knn in test dataset is 0.96

@@ -90,6 +90,8 @@ def gen_pseudo_data_points(X_train, X_valid, y_valid, xt, classifier, n=9, m=9, 
         m: number of k nearest valid samples of test datapoint
         alpha: generate datapoint weight
         p: phi threshold weight
+    Return
+        pseudo_datapoints:
     """
     N, F = X_train.shape
     M, _ = X_valid.shape
@@ -152,6 +154,7 @@ def predict(pseudo_datapoints, classifier):
 
 def predict_all(X_train, X_valid, y_valid, X_test, classifier, n=9, m=9, p=0.85, alpha=0.5):
     """
+    Predict all value for testset
     Params
         X_train: Reference datapoints with shape NxF
         X_valid: Valid datapoints with shape MxF
@@ -165,11 +168,17 @@ def predict_all(X_train, X_valid, y_valid, X_test, classifier, n=9, m=9, p=0.85,
     """
     y_preds = []
     for xt in X_test:
-        pseudo_datapoints = gen_pseudo_data_points(X_train, X_valid, y_valid, xt, classifier)
+        pseudo_datapoints = gen_pseudo_data_points(X_train, X_valid, y_valid, xt, classifier, n, m, p, alpha)
         y_pred = predict(pseudo_datapoints, classifier)
         y_preds.append(y_pred)
     return np.array(y_preds)
 
+def log(log_path, data):
+    with open(log_path, "a") as f:
+            f.write(data)
+            f.write('\n')
+            f.flush()
+            f.close()
 
 
 if __name__ == '__main__':
@@ -178,6 +187,7 @@ if __name__ == '__main__':
     # test_matrix_mul(u, v)
 
     # Load dataset
+    log_path = 'results.txt'
     data = pd.read_csv("iris.csv")
     le = preprocessing.LabelEncoder()
     data['label'] = le.fit_transform(data['category'].values)
@@ -196,11 +206,16 @@ if __name__ == '__main__':
     # Acc of single classifier with-out 
     y_pred = neigh.predict(X_test)
     print(f'acc score of knn in test dataset is {accuracy_score(y_pred, y_test)}')
+    log(log_path, f'acc score of knn in test dataset is {accuracy_score(y_pred, y_test)}')
     y_pred = mlp.predict(X_test)
     print(f'acc score of mlp in test dataset is {accuracy_score(y_pred, y_test)}')
+    log(log_path, f'acc score of mlp in test dataset is {accuracy_score(y_pred, y_test)}')
 
     # Acc of single classifier with
     y_preds = predict_all(X_train, X_valid, y_valid, X_test, mlp)
     print(f'acc score of single based multiple classifier - mlp in test dataset is {accuracy_score(y_preds, y_test)}')
+    log(log_path, f'acc score of single based multiple classifier - mlp in test dataset is {accuracy_score(y_preds, y_test)}')
     y_preds = predict_all(X_train, X_valid, y_valid, X_test, neigh)
     print(f'acc score of single based multiple classifier - knn in test dataset is {accuracy_score(y_preds, y_test)}')
+    log(log_path, f'acc score of single based multiple classifier - knn in test dataset is {accuracy_score(y_preds, y_test)}')
+
