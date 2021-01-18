@@ -1,6 +1,6 @@
 ## Original Paper 
 
-This is implementation of the paper: Single Classifier Based Multiple Classifications
+This is implementation of the paper: [Single Classifier Based Multiple Classifications](https://link.springer.com/chapter/10.1007/978-3-642-38067-9_12).
 
 ## Dataset 
 
